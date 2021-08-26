@@ -4,31 +4,15 @@ import { devtools } from "zustand/middleware";
 
 import immer from "./middlewares/immer";
 import persist from "./middlewares/persist";
+import { addTodo, removeTodo, toggleTodo } from "./utils";
 
 const createStore = pipe(devtools, immer, persist, create);
 
 const useStore = createStore((set) => ({
   todos: [],
-  addTodo: (todo) =>
-    set((draft) => {
-      draft.todos.unshift(todo);
-    }),
-  toggleTodo: (id) =>
-    set((draft) => {
-      const todoIndex = draft.todos.findIndex((todo) => todo.id === id);
-
-      if (todoIndex !== -1) {
-        draft.todos[todoIndex].done = !draft.todos[todoIndex].done;
-      }
-    }),
-  removeTodo: (id) =>
-    set((draft) => {
-      const todoIndex = draft.todos.findIndex((todo) => todo.id === id);
-
-      if (todoIndex !== -1) {
-        draft.todos.splice(todoIndex, 1);
-      }
-    }),
+  addTodo: (todo) => set((draft) => addTodo(draft, todo)),
+  removeTodo: (id) => set((draft) => removeTodo(draft, id)),
+  toggleTodo: (id) => set((draft) => toggleTodo(draft, id)),
 }));
 
 export default useStore;
